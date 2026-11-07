@@ -1,0 +1,15 @@
+-- For a NEW, EMPTY, explicitly verified disposable Phase 2 target only.
+-- Cluster-global roles are not contained in pg_dump -Fc.
+\set ON_ERROR_STOP on
+-- Atomic provisioning, non-idempotent and requiring empty-target preflight.
+BEGIN;
+CREATE ROLE lab_tenant_north NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE lab_tenant_south NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE lab_anonymous NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+-- Restore policies reference lab_backup; no LOGIN is needed on recovery.
+CREATE ROLE lab_backup NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE lab_marker NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+REVOKE ALL ON DATABASE labdb FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+COMMIT;
+-- No role memberships are granted.

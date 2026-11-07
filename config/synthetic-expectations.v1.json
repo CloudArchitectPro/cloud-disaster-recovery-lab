@@ -1,0 +1,50 @@
+{
+  "version": "synthetic-seed-v1",
+  "postgres_major": 17,
+  "schemas": [
+    "lab",
+    "lab_dr"
+  ],
+  "tables": {
+    "lab.organizations": 2,
+    "lab.assets": 3,
+    "lab.recovery_events": 3
+  },
+  "assets": {
+    "SAMPLE-A": "ready",
+    "SAMPLE-B": "degraded",
+    "SAMPLE-C": "offline"
+  },
+  "tenant_counts": {
+    "lab_tenant_north": [
+      1,
+      2,
+      2
+    ],
+    "lab_tenant_south": [
+      1,
+      1,
+      1
+    ]
+  },
+  "required_policies": [
+    "org_tenant_read",
+    "asset_tenant_read",
+    "event_tenant_read",
+    "org_backup_read",
+    "asset_backup_read",
+    "event_backup_read"
+  ],
+  "required_roles": [
+    "lab_tenant_north",
+    "lab_tenant_south",
+    "lab_anonymous",
+    "lab_backup",
+    "lab_marker"
+  ],
+  "required_constraints": 9,
+  "required_indexes": [
+    "lab.recovery_events_asset_idx"
+  ],
+  "marker_table": "lab_dr.recovery_markers"
+}

@@ -1,0 +1,21 @@
+flowchart TD
+  subgraph Source["Isolated source environment"]
+    PG1["PostgreSQL 17 source<br/>synthetic schema/data"]
+  end
+  subgraph Backup["Backup and protection (planned)"]
+    DUMP["pg_dump -Fc"]
+    AGE["age encrypt"]
+    HASH["Authenticated integrity manifest"]
+    STORE["Local encrypted artifact store"]
+    DUMP --> AGE --> HASH --> STORE
+  end
+  subgraph Recovery["Isolated recovery environment"]
+    VERIFY["Verify integrity and decrypt"]
+    INSPECT["pg_restore --list<br/>compatibility review"]
+    PG2["PostgreSQL 17 recovery"]
+    VALID["Data + constraint + RLS validation"]
+    VERIFY --> INSPECT --> PG2 --> VALID
+  end
+  PG1 --> DUMP
+  STORE --> VERIFY
+  VALID --> REPORT["Sanitized evidence<br/>RPO/RTO methodology"]

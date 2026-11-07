@@ -1,0 +1,20 @@
+name: Foundation checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout (pinned to v4.2.2 commit)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate foundation content and confidentiality patterns
+        run: python3 tests/foundation_check.py
+      - name: Validate Compose syntax
+        run: docker compose -f infrastructure/docker/compose.yaml config --quiet

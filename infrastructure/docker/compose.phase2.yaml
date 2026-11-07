@@ -1,0 +1,23 @@
+name: cloud-dr-phase2-validation
+services:
+  restore:
+    image: ${POSTGRES17_IMAGE:?Set POSTGRES17_IMAGE to an approved postgres:17-bookworm@sha256 digest}
+    environment:
+      POSTGRES_USER: lab_owner
+      POSTGRES_PASSWORD: local-demo-only-not-a-secret
+      POSTGRES_DB: labdb
+    volumes:
+      - phase2_restore_data:/var/lib/postgresql/data
+    networks: [phase2_internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab_owner -d labdb && psql -U lab_owner -d labdb -tAc 'SELECT 1' | grep -qx 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 15s
+    restart: "no"
+networks:
+  phase2_internal:
+    internal: true
+volumes:
+  phase2_restore_data:
